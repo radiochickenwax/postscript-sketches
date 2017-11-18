@@ -1,0 +1,14 @@
+<< /PageSize [500 500 ] >> setpagedevice
+/Times-Roman findfont 10 scalefont setfont
+
+/string 7 string def  % setup a string data type with 7 chars
+/num {1 neg} def
+/str2num {num string cvs} def  % convert -1 to a string, and clear the stack
+/shownum {
+    /num num 1 add def % increment number
+    str2num pop % store result in string
+    100 250 moveto
+    20 20  scale
+    string  show
+    } def
+50 {shownum showpage} repeat
