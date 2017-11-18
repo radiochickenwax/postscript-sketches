@@ -1,0 +1,343 @@
+% Sat Dec 08, 2012 23:26:10
+% Here's a good start to doing superscripts in
+% postscript.  Haven't found bugs yet, that
+% doesn't mean they're not there.
+
+
+% /set-height{
+% gsave
+%  newpath
+%    0 0 moveto
+%    (X) true charpath
+%  flattenpath pathbbox
+%  /height exch def pop pop pop
+% /rf currentfont def
+% /ff currentfont [.4 0 0 .4 0 0] makefont def % fractionfont
+% grestore } def
+
+% /set-exp{
+% {
+%   (^) search
+%   { % if true, set prebreak search for lb, and pop ^ off stack
+%     /pre-break exch def pop  
+%     pre-break show
+%     ({) search 
+%      { % if { search for }
+%        pop pop 
+%        (}) search 
+%           { % if } set exp string
+%             /raised exch def pop
+%             0 .7 height mul rmoveto
+%             ff raised show 
+%             0 .7 height mul neg rmoveto rf 
+%             pop pop
+%           }
+%           {             % if missing rbrack
+%           } ifelse      % do nothing
+%      }
+%      {        % if missing lbrack
+%      } ifelse % do nothing
+%   }
+%   { 
+%     show exit
+%     %addbreaks exit
+%   } ifelse  % if missing caret, just show string
+% } loop
+% } bind def      
+
+
+
+/set-exp{
+/count 0  def
+%currentpoint /yc exch def pop
+{
+  (^) search
+  { % if true, set prebreak search for lb, and pop ^ off stack
+    /pre-break exch def pop  % pop ^ char off stack
+    pre-break true charpath % removes exp from stack and puts charpath in userpath?
+    ({) search 
+     { % if { search for }
+       % somehow this puts a blank string on stack?
+       pop % pop ( ) off stack.  How did this get here? 
+       pop 
+       (}) search 
+          { % if } set exp string
+            /raised exch def pop
+	    count 1 add /count exch def
+%
+	    gsave
+	    newpath
+	     0 0 moveto
+	     (X) true charpath
+	     flattenpath pathbbox
+	     /height exch def pop pop pop
+	     /rf currentfont def
+	     /ff currentfont [.3 0 0 .3 0 0] makefont def % fractionfont
+	    grestore
+%
+            0 .7 height mul rmoveto
+            ff raised true charpath %show 
+            %0 .7 height mul neg rmoveto 
+	    rf 
+            pop pop  % what's on stack here?
+          }
+          {             % if missing rbrack
+          } ifelse      % do nothing
+     }
+     {        % if missing lbrack
+     } ifelse % do nothing
+  }
+  { % get here when?   if there's no ^ ?
+    %show
+    % 0 yc rmoveto  % can't do this because we don't know dy
+    0 .7 height mul neg count mul rmoveto
+    true charpath
+    %number-of-exps    
+    exit
+    %addbreaks exit
+  } ifelse  % if missing caret, just show string
+} loop
+}def 
+
+
+
+
+/dfrac{
+  currentfont /FontName get
+  /original-font exch def
+  currentfont /FontMatrix get 0 get 100 mul cvi 10 mul
+  /height exch def
+  /center-y height 2 div def
+  currentpoint /yc exch def /xc exch def
+  % start with denominator
+  dup stringwidth pop /dxd exch def
+  dxd 2 div /cxd exch def
+%
+  exch dup % move onto numerator
+  stringwidth pop /dxn exch def
+  dxn 2 div /cxn exch def
+% test to see which string is longer
+dxd dxn ge
+{ % if denominator len is greater or equal than numerator:
+% center numerator  
+ xc cxd add cxn sub 
+ yc center-y add moveto    
+ true charpath
+% draw denominator on xmargin
+   xc 
+   yc center-y sub moveto
+   true charpath
+% draw box for fraction separator
+   xc yc center-y add moveto
+   xc dxd add yc center-y add lineto 
+   xc dxd add yc center-y add height 30 div sub lineto
+   xc yc center-y add height 30 div sub lineto
+   xc yc center-y add lineto
+   xc dxd add yc  moveto
+}
+{ % otherwise numerator string is larger
+% draw numerator on xmargin
+ xc 
+ yc center-y add moveto    
+ true charpath
+% center denominator on numerator's center
+   xc cxn add cxd sub 
+   yc center-y sub
+   moveto
+   true charpath
+% draw box for fraction separator
+   xc yc center-y add moveto
+   xc dxn add yc center-y add lineto 
+   xc dxn add yc center-y add height 30 div sub lineto
+   xc yc center-y add height 30 div sub lineto
+   xc yc center-y add lineto
+%   xc yc center-y add moveto 
+%   xc dxn add yc center-y add lineto %stroke
+   xc dxn add yc moveto
+}
+ifelse
+} def
+
+
+% Mon Jan 28, 2013 11:34:03
+% The following works for simple cases, but it doesn't allow recursive
+% searches for fractions such as (a/b)  (c/d) dfrac
+
+% I'm going to commment this out here - and try to extend it in the
+% next stanza.  
+
+% /search-string-for-dfrac {
+% { %start loop
+% (\dfrac) search 
+%  { 
+%     /pre-break exch def pop  
+%     pre-break true charpath %show
+%    ({) search 
+%      {
+%       pop pop
+%       (}) search
+%          { 
+%           exch pop
+%           /numerator exch def
+%           ({) search 
+%             { pop pop 
+%              (}) search
+%                {
+%                /denominator exch def
+%                %pop 
+%                pop
+%                numerator denominator dfrac
+%                }
+%                { %true charpath exit
+%                } ifelse
+%             }
+%             { %true charpath exit
+%             } ifelse
+%          }
+%          { %true charpath exit
+%          } ifelse
+%      }
+%      { %true charpath exit
+%      } ifelse
+%  }
+% {true charpath exit} ifelse } loop
+% } def
+
+
+
+% (A = \dfrac{a}{\int a + \dfrac{v}{b+c}} + \int V \dfrac{a}{f+a} + c)
+
+% ( A(x) = \dfrac{\dfrac{x}{x+2}}{1+\dfrac{1+\dfrac{1}{x}}} )
+
+
+/search-string-for-dfrac {
+{ %start loop
+(\dfrac) search 
+ { % if found
+    /pre-break exch def
+    pop  % pop dfrac off stack
+    pre-break true charpath %show
+   ({) search 
+     { % if found
+      pop % pop what off stack? (blank string) 
+      pop % pop what off stack? ({)
+      % don't search for closing bracket yet
+      (}) search
+         { 
+          exch pop
+	  % now the numerator should be on the stack, but we need to
+	  % search it again for \dfrac.  How?
+          /numerator exch def
+	  %numerator search-string-for-dfrac
+          ({) search 
+            {
+            pop
+            pop 
+             (}) search
+               {
+               /denominator exch def
+	       %denominator search-string-for-dfrac
+               %pop 
+               pop
+               numerator denominator dfrac
+               }
+               { %true charpath exit
+               } ifelse
+            }
+            { %true charpath exit
+            } ifelse
+         }
+         { %true charpath exit
+         } ifelse
+     }
+     { %true charpath exit
+     } ifelse
+ } % end positive 1st search for dfrac
+{true charpath exit} % if dfrac isn't found
+ifelse  % dfrac conditional
+} loop
+} def
+
+
+% Tue Feb 05, 2013 16:05:24
+/get-dfrac-path { % string on stack
+newpath % remove this later
+xline yline moveto
+%dup  % copy string on stack
+search-string-for-dfrac 
+closepath  
+pathbbox 
+/ymax exch def /xmax exch def
+/ymin exch def /xmin exch def
+ymax ymin sub /height exch def
+xmax xmin sub /width exch def
+} def 
+
+
+% Mon Feb 11, 2013 16:28:50
+% Take 2 strings from stack
+% search 1st for 2nd, store resulting locations
+
+/search-store{
+	      /search_string exch  def
+	      /to_search exch  def	
+	      [] /match_array exch def
+	      0 1 to_search length search_string length  sub
+	      { /i exch def
+	          to_search 
+		  i search_string length getinterval 
+		  search_string
+		  eq
+		  {[ match_array aload pop i ] /match_array exch def}
+		if
+	      } for
+} bind def
+
+% Wed Feb 13, 2013 11:24:21
+% search string for brackets.
+% store matching brackets in match_pairs array
+/balance-parens {
+/to_search exch def
+[] /unpaired exch def
+[] /match_pairs exch def
+0 1 to_search length 1 sub
+{/i exch def
+ to_search i getchar ({)  eq
+ { [ unpaired aload pop i ] 
+   /unpaired exch def
+ } if
+ to_search i getchar (})  eq
+ {
+   [ 
+     match_pairs aload pop 
+     [
+      unpaired dup length 1 sub get
+      i
+     ]
+   ]
+   /match_pairs exch def
+   [unpaired aload pop pop]
+   /unpaired exch def
+ } if
+}
+for
+} bind def
+
+
+% Wed Feb 13, 2013 15:29:51
+/get-substring-matches{
+[] /substring_matches exch def
+0 1 match_pairs length 1 sub {
+ /i exch def 
+ [
+ substring_matches
+ aload pop 
+ [ to_search
+ match_pairs i get
+ aload pop exch
+ 1 add dup
+ 3 -2 roll sub
+ getinterval ]
+ ] /substring_matches 
+ exch def
+} for } bind def

@@ -1,0 +1,165 @@
+% Sun Nov 25, 2012 14:02:10
+% I'd written a lot of this stuff before,
+% but I couldn't find it.
+
+% A lot can go wrong with variables named here,
+% and I'm still wrestling with namespaces in
+% postscript.
+
+% Resources might be a better approach, but it
+% took a lot of work just to get to this point.
+
+% Maybe I'll have time to clean this up, but
+% I wouldn't count on it.
+
+% At the very least, this will suffice for now
+% to draw simple labeled grids.
+
+
+/xgridlines { % xmin ymin xmax ymax xdiv xgridlines
+              /xmin 5 index def 
+              /ymin 4 index def
+              /xmax 3 index def 
+              /ymax 2 index def
+              /xdiv 1 index def 
+              5 {pop} repeat
+             xmin xdiv xmax 
+               {
+               /i exch def 
+               /xtmp {0 i add} def 
+               xtmp ymax moveto  
+               xtmp ymin lineto stroke  
+               } for
+             } def
+
+% /xgridlabels { % xmin ymin xmax ymax xdiv xgridlines
+%               /xmin 5 index def 
+%               /ymin 4 index def
+%               /xmax 3 index def 
+%               /ymax 2 index def
+%               /xdiv 1 index def 
+%               5 {pop} repeat
+%               /xstr 4 string def
+%               /Times-Roman findfont 10 scalefont setfont
+%         xmin xdiv xmax 
+%                 {
+%                 /i exch def 
+%                 i xstr cvs 
+%                 stringwidth pop
+%                 /w exch def
+%                 /xtmp {0 i add} def 
+%                 xtmp w 2 div sub ymin 10 sub moveto  
+%                 xstr show
+%                 } for
+% } def
+
+% redoing this to use a more versatile
+% string length
+/xgridlabels { % xmin ymin xmax ymax xdiv xgridlines
+              /xmin 5 index def 
+              /ymin 4 index def
+              /xmax 3 index def 
+              /ymax 2 index def
+              /xdiv 1 index def 
+              5 {pop} repeat
+              %/xstr 4 string def
+              /Times-Roman findfont 10 scalefont setfont
+        xmin xdiv xmax 
+                {
+                /i exch def
+                /len {i 12 string cvs length} def
+                /xstr len string def
+                i xstr cvs 
+                stringwidth pop
+                /w exch def
+                /xtmp {0 i add} def 
+                xtmp w 2 div sub ymin 10 sub moveto  
+                xstr show
+                } for
+} def
+
+
+
+/ygridlines { % xmin ymin xmax ymax ydiv ygridlines
+              /xmin 5 index def 
+              /ymin 4 index def
+              /xmax 3 index def 
+              /ymax 2 index def
+              /ydiv 1 index def 
+              5 {pop} repeat
+        ymin ydiv ymax 
+                {
+                /i exch def 
+                /ytmp {0 i add} def 
+                xmax ytmp  moveto  
+                xmin ytmp lineto stroke  
+                } for
+} def
+
+
+/ygridlabels {
+              /xmin 5 index def 
+              /ymin 4 index def
+              /xmax 3 index def 
+              /ymax 2 index def
+              /ydiv 1 index def 
+              5 {pop} repeat
+/Times-Roman findfont 10 scalefont setfont
+/xstr 4 string def
+        ymin ydiv ymax 
+                {
+                /i exch def 
+                /len {i 12 string cvs length} def
+                /xstr len string def
+                i xstr cvs 
+                stringwidth pop
+                /w exch def
+                /ytmp {0 i add} def 
+                xmin w 4 add sub ytmp moveto  
+                xstr show
+                } for
+} def
+
+/grid { % xmin ymin xmax ymax space grid
+              /xmin 5 index def 
+              /ymin 4 index def
+              /xmax 3 index def 
+              /ymax 2 index def
+              /space 1 index def 
+              5 {pop} repeat
+        xmin ymin xmax ymax space xgridlines
+        xmin ymin xmax ymax space xgridlabels
+        xmin ymin xmax ymax space ygridlines
+        xmin ymin xmax ymax space ygridlabels
+        } def
+
+
+/gridn { % xmin ymin xmax ymax space grid
+              /xmin 5 index def 
+              /ymin 4 index def
+              /xmax 3 index def 
+              /ymax 2 index def
+              /space 1 index def 
+              5 {pop} repeat
+        xmin ymin xmax ymax space xgridlines
+%        xmin ymin xmax ymax space xgridlabels
+        xmin ymin xmax ymax space ygridlines
+%        xmin ymin xmax ymax space ygridlabels
+        } def
+        
+        
+/box { % x0 y0 xf yf box
+%    /yf exch def /xf
+/x0 4 index def
+/y0 3 index def
+/xf 2 index def
+/yf 1 index def
+4 {pop} repeat
+newpath 
+x0 y0 moveto 
+x0 yf lineto 
+xf yf lineto 
+xf y0 lineto 
+x0 y0 lineto
+closepath
+} def

@@ -1,0 +1,25 @@
+
+
+/bgcolor{ % rcolor gcolor bcolor 
+setrgbcolor
+0 0 PageX PageY box fill
+} def
+
+/PageGrid{
+% ------
+% grid
+% -------
+%0.6 setgray
+0 .7 .3 setrgbcolor
+20 20 PageX 20 sub PageY 20 sub 20 grid
+% ---------
+PageX 20        % lower left corner
+PageX PageY            % upper right corner
+40                      % grid spacing
+ygridlabels
+% ----------
+40 PageY 10 sub PageX 40 sub PageY 10 sub 40 xgridlabels
+% -------
+%500 20 500 480 40 ygridlabels
+%40 495 480 495 40 xgridlabels
+} def
