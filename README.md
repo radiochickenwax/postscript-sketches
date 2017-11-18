@@ -12,7 +12,7 @@ Sample Use Cases:
 3. Making fonts
 4. Brainstorming
 5. Making highly performant math based UIs
-   5.1 Bode plots https://en.wikibooks.org/wiki/Control_Systems/Bode_Plots
-   5.2 Nyquist plots https://en.wikipedia.org/wiki/Nyquist_plot
-   5.3 Smith chart https://en.wikipedia.org/wiki/Smith_chart
+   - 5.1 Bode plots https://en.wikibooks.org/wiki/Control_Systems/Bode_Plots
+   - 5.2 Nyquist plots https://en.wikipedia.org/wiki/Nyquist_plot
+   - 5.3 Smith chart https://en.wikipedia.org/wiki/Smith_chart
 6. Algorithm exploration and visualization
