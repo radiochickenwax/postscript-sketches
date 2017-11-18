@@ -16,3 +16,4 @@ Sample Use Cases:
    - 5.2 Nyquist plots https://en.wikipedia.org/wiki/Nyquist_plot
    - 5.3 Smith chart https://en.wikipedia.org/wiki/Smith_chart
 6. Algorithm exploration and visualization
+7. Language Design
