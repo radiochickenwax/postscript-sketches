@@ -12,7 +12,7 @@ Sample Use Cases:
    - 5.1 Bode plots https://en.wikibooks.org/wiki/Control_Systems/Bode_Plots
    - 5.2 Nyquist plots https://en.wikipedia.org/wiki/Nyquist_plot
    - 5.3 Smith chart https://en.wikipedia.org/wiki/Smith_chart
-   - These were plot types that I needed to make quite often as an engineering student.  There were other ways to make them: i.e. MATLAB, python, etc... but they usually did not provide the level of control or speed that postscript did.
+   - These were plot types that I needed to make quite often as an engineering student.  There were other ways to make them: i.e. MATLAB, python, etc... but they usually did not (and still do not) provide the level of control or speed that postscript did.
 3. Making fonts
 4. Brainstorming
 5. Making highly performant math based UIs
